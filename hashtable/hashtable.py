@@ -7,6 +7,9 @@ class HashTableEntry:
         self.value = value
         self.next = None
 
+    def __str__(self):
+        print(f'Key is {self.key}, value is {self.value}')
+
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
 
@@ -86,9 +89,6 @@ class HashTable:
         Hash collisions should be handled with Linked List Chaining.
         Implement this.
         """
-        # index = self.hash_index(key)
-        # entry = HashTableEntry(key, value)
-        # self.storage[index] = entry
 
         self.count += 1
         load_factor = self.get_load_factor()
@@ -101,19 +101,17 @@ class HashTable:
         # create node with key, value
         entry = HashTableEntry(key, value)
 
-        # check hash table for a linked list
         if self.array[index] is not None:
-            cur = self.array[index]
-            prev = cur
-            while cur is not None:
-                if cur.key == key:
-                    prev.next = entry
+            cur = self.array[index]  ## setting cur to whats there already
+            prev = cur  ## setting prev to whats there already
+            while cur is not None:  ## if something is there already
+                if cur.key == key:  ## if whats there already is the same as new
+                    prev.next = entry  ## replace it with new
                     self.delete(key)
                     return
                 else:
-                    prev = cur
-                    cur = cur.next
-            prev.next = entry
+                    cur = cur.next  ## setting cur to be the next node in linked list
+            prev.next = entry  ## placing new node in .next spot of whats there
         else:
             self.array[index] = entry
 
@@ -130,7 +128,6 @@ class HashTable:
 
         if self.array[index] is not None:
             cur = self.array[index]
-            # special case of deleting the head
             if cur.key == key:
                 if cur.next is not None:
                     cur = cur.next
@@ -144,7 +141,7 @@ class HashTable:
 
             while cur is not None:
                 if cur.key == key:
-                    prev.next = cur.next  # cuts out the node from the list
+                    prev.next = cur.next
                     cur.next = None
                     return cur
                 else:
@@ -186,17 +183,45 @@ class HashTable:
         rehashes all key/value pairs.
         Implement this.
         """
-        print("CAPACITY BEFORE RESIZE", self.capacity)
+
+        # new = [None] * new_capacity
+        # counter = 0
+        # for item in self.array:
+        #     new[counter] = item
+        #     counter += 1
+        # self.array = new
+
+
+
         new = [None] * new_capacity
-        counter = 0
+
         for item in self.array:
-            new[counter] = item
-            counter += 1
+            if item is not None:
+                print(item)
+                # print("KEY: ", item.key)
+                # print("VALUE: ", item.value)
+                new[self.hash_index(item.key)] = item
+                n = item.next
+                while n is not None:
+                    new[self.hash_index(n.key)] = n.value
+                    n = n.next
+
         self.array = new
-        # self.capacity = new_capacity
 
-        print("CAPACITY AFTER RESIZE", new_capacity)
 
+
+
+        # new = [None] * new_capacity
+
+        # for item in self.array:
+        #     if item is not None:
+        #         self.put(item.key, item.value)
+        #         n = item.next
+        #         while n is not None:
+        #             self.put(n.key, n.value)
+        #             n = n.next
+
+        # self.array = new
 
 
 if __name__ == "__main__":
